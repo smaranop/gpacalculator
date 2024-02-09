@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Helpful Resources</title>
+    <style>
+        body, html {
+            height: 100%; /* Ensure the full height of the viewport is used */
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center; /* Center horizontally */
+            align-items: center; /* Center vertically */
+            background-color: #800000;
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 350px; /* Adjust width as needed */
+            text-align: center;
+        }
+        .button, .button-resource {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            background-color: #800000;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            text-decoration: none; /* Remove underline from links */
+            display: block; /* Ensure links are block level for full width */
+        }
+        .button-resource:hover {
+            background-color: #800000;
+        }
+        .button {
+            width: auto; /* Adjust width to fit content */
+            margin-bottom: 0; /* Remove bottom margin */
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+         <div class="logo">
+            <!-- Placeholder for logo if similar to GPA Calculator page -->
+            <img src="https://s3-us-west-2.amazonaws.com/sportshub2-uploads-prod/files/sites/3715/2022/09/15171508/Updated-Lambert-HS-Logo.png" alt="Lambert Longhorns Logo" style="width: 100px; height: auto; margin: 0 auto 20px;">
+        </div>
+        <!-- Header with the title of the helpful resources page -->
+        <h1>Helpful Resources</h1>
+        <!-- Buttons to access different resources -->
+        <button onclick="window.open('https://collegeai.com/chanceme')" class="button-resource">Calculate Your Chances At College</button>
+        <button onclick="window.open('https://www.forsyth.k12.ga.us/domain/2329')" class="button-resource">Counselor's Office</button>
+        <button onclick="window.open('https://www.collegeboard.org/')" class="button-resource">College Board</button>
+        <button onclick="window.open('https://hippocampus.org/')" class="button-resource">Hippo Campus</button>
+        <button onclick="window.open('https://www.khanacademy.org/')" class="button-resource">Khan Academy</button>
+        <button onclick="window.open('https://cws.auburn.edu/shared/content/files/50/WISE_Study_Tips.pdf')" class="button-resource">Study Tips</button>
+        <button onclick="window.open('https://www.jmu.edu/first-gen/valleyscholars/_files/improvemyhighschoolstudyskills.pdf')" class="button-resource">Study Tips</button>
+        <!-- Button to return to the GPA Calculator -->
+        <a href="gpacalculator.html" target="_self" class="button">Back to GPA Calculator</a>
+    </div>
+</body>
+</html>
