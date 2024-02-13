@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lambert High School GPA Calculator - Login</title>
+    <style>
+        /* CSS styles for the webpage layout */
+        /* Body styles */
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(to bottom right, #ff5757 0%, #ff0000 100%); /* Updated background gradient */
+            color: #ffffff; /* Updated text color */
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        /* Container styles */
+        .container {
+            background: linear-gradient(45deg, #575757, #000000);
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+            width: 350px;
+            text-align: center;
+            margin-top: 50px;
+        }
+        /* Logo styles */
+        .logo img {
+            width: 100px;
+            height: auto;
+            margin: 0 auto 20px;
+        }
+        /* Heading styles */
+        h1 {
+            margin-bottom: 20px;
+            color: #cccccc;
+            font-size: 24px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4);
+        }
+        /* Input, label, and button styles */
+        label, input, button {
+            width: 100%;
+            margin-bottom: 10px;
+            text-align: center; /* Center align input fields */
+        }
+        label {
+            color: #ffffff;
+            display: block;
+            text-align: left; /* Align label text to the left */
+            padding-left: 10px; /* Add padding to the left of labels */
+        }
+        input {
+            padding: 8px;
+            border: none;
+            border-radius: 6px;
+            background-color: #dddddd;
+            margin: 0 auto 10px; /* Center input fields and add margin at the bottom */
+            box-sizing: border-box; /* Include padding and border in the element's total width and height */
+        }
+        button {
+            padding: 10px;
+            background-color: #aaaaaa;
+            color: #ffffff;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Logo and heading -->
+        <div class="logo">
+            <img src="https://s3-us-west-2.amazonaws.com/sportshub2-uploads-prod/files/sites/3715/2022/09/15171508/Updated-Lambert-HS-Logo.png" alt="Lambert Longhorns Logo">
+            <h1>Lambert High School GPA Calculator</h1>
+        </div>
+        <!-- Login form -->
+        <form id="loginForm">
+            <label for="studentID">Student ID:</label>
+            <input type="text" id="studentID" required>
+            <label for="password">Password:</label>
+            <input type="password" id="password" required>
+            <button type="submit" style="margin-top: 10px;">Login</button>
+        </form>
+    </div>
+
+    <!-- JavaScript code -->
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            // Redirect to GPA calculator page after successful login
+            window.location.href = 'gpacalculator.html';
+        });
+    </script>
+</body>
+</html>
