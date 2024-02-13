@@ -8,16 +8,19 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            margin: 20px;
+            margin: 0;
             padding: 0;
-            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(to bottom right, #800000 0%, #000000 100%) fixed;
         }
         .container {
             background-color: #fff;
             padding: 20px;
-            border-radius: 8px;
+            border-radius: 30px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            max-width: 800px;
+            max-width: 550px;
             margin: auto;
         }
         h1 {
@@ -25,9 +28,14 @@
         }
         p {
             margin-bottom: 20px;
+            color: #000; /* Adjust text color */
         }
         a {
             color: #800000;
+            text-decoration: none; /* Remove underline from links */
+        }
+        a:hover {
+            color: #b30000; /* Lighter red on hover */
         }
     </style>
 </head>
@@ -67,6 +75,28 @@
         <h2>Need Further Help?</h2>
         <p>If you need further assistance or have any questions, please do not hesitate to contact us at <a href="mailto:hornscalculator215@gmail.com">hornscalculator215@gmail.com</a>.</p>
         
+        <!-- Q&A Section -->
+<h2>Frequently Asked Questions (FAQ)</h2>
+<div class="faq-section">
+    <h3>How do I add courses from previous years?</h3>
+    <p>You can add courses from previous academic years by clicking the "Add Year" button for each year you need to add. Then, fill in your courses for each year accordingly.</p>
+
+    <h3>Can I calculate both semester and yearly GPAs?</h3>
+    <p>Yes, the GPA Calculator allows you to enter course information for both semester and full-year courses. Ensure you select the correct credit value for each course to accurately calculate your GPA.</p>
+
+    <h3>What should I do if I make a mistake entering my course information?</h3>
+    <p>If you make an error, you can either edit the course details directly if the option is available or delete the course and re-enter the correct information.</p>
+
+    <h3>How is my GPA calculated if I retake a course?</h3>
+    <p>For the purpose of this calculator, if you retake a course, only the highest grade should be entered to most accurately reflect the calculation methods used by many educational institutions.</p>
+
+    <h3>Is this calculator suitable for college GPA calculation?</h3>
+    <p>While this calculator provides a general estimate of your GPA, college students should consult their academic advisor or their institution's official GPA calculation policies to ensure accuracy, as weighting and grading scales may vary.</p>
+</div>
+
+
+<!-- Continue with the rest of the help page content -->
+
         <!-- Return link to the GPA Calculator -->
         <p>Return to the <a href="gpacalculator.html">GPA Calculator</a>.</p>
     </div>
