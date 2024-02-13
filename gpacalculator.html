@@ -4,13 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GPA Calculator</title>
+    <!-- Include jsPDF library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.3.1/jspdf.umd.min.js"></script>
     <style>
-        /* CSS styles for the webpage layout */
-        /* Body styles */
         body {
             font-family: Arial, sans-serif;
-            background-color: #800000;
-            color: #000;
+            background: linear-gradient(to bottom right, #800000 0%, #000000 100%) fixed;
+            color: #fff;
             margin: 0;
             padding: 0;
             display: flex;
@@ -18,9 +18,8 @@
             align-items: center;
             height: 100vh;
         }
-        /* Container styles */
         .container {
-            background-color: #fff;
+            background: linear-gradient(to top left, #575757, #000000);
             padding: 20px;
             border-radius: 8px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
@@ -29,47 +28,47 @@
             margin-top: 50px;
             overflow-y: auto;
         }
-        /* Logo styles */
         .logo img {
             width: 100px;
             height: auto;
             margin: 0 auto 20px;
         }
-        /* Heading styles */
         h1 {
             margin-bottom: 20px;
-            color: #800000;
+            color: #fff;
             font-size: 24px;
         }
-        /* Input, label, select, and button styles */
         label, input, select, button {
             width: 100%;
             margin-bottom: 10px;
-        }
-        label {
-            color: #000;
+            color: #fff;
         }
         input, select {
-            padding: 8px;
-            border: 1px solid #000;
+            padding: 5px;
+            border: 1px solid #fff;
             border-radius: 4px;
             background-color: #fff;
+            color: #000;
         }
         button {
             padding: 10px;
-            background-color: #800000;
+            background-color: #aaaaaa;
             color: #fff;
             border: none;
             border-radius: 4px;
             cursor: pointer;
+            transition: background-color 0.3s ease;
         }
-        /* Course container and GPA box styles */
+        .button-resource:hover {
+            background-color: #b30000;
+        }
         .year-container, .gpa-box {
-            border: 1px solid #000;
+            border: 1px solid #fff;
             border-radius: 4px;
             padding: 10px;
-            background-color: #fff;
+            background: linear-gradient(45deg, #575757, #000000);
             margin-bottom: 20px;
+            color: #fff;
         }
         .year-container {
             max-height: 200px;
@@ -79,30 +78,29 @@
             background-color: #f0f0f0;
             font-weight: bold;
             text-align: center;
+            color: #fff;
         }
-        /* Hide elements initially */
         .hidden {
             display: none;
         }
-        /* Year title styles */
         .year-title {
-            background-color: #800000;
+            background-color: #6e2929;
             color: #fff;
             padding: 8px;
             margin-top: 0;
             border-radius: 4px 4px 0 0;
         }
-        /* Footer styles */
         .footer {
             margin-top: 20px;
         }
-        /* Enhanced Transcript UI styles */
         .transcript {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: #f9f9f9;
             padding: 20px;
             border-radius: 10px;
             color: #333;
+            max-width: 600px;
+            margin: 0 auto;
         }
         .transcript h1, .transcript h2, .transcript ul {
             text-align: left;
@@ -111,46 +109,61 @@
         }
         .grade-level {
             margin-top: 20px;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 10px;
+        }
+        .grade-level:last-child {
+            border-bottom: none;
+        }
+        .grade-level p {
+            margin: 5px 0;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <!-- Logo and heading -->
         <div class="logo">
             <img src="https://s3-us-west-2.amazonaws.com/sportshub2-uploads-prod/files/sites/3715/2022/09/15171508/Updated-Lambert-HS-Logo.png" alt="Lambert Longhorns Logo">
             <h1>GPA Calculator</h1>
         </div>
-        <!-- User name input -->
         <label for="userName">Enter Your Name:</label>
         <input type="text" id="userName" placeholder="Your Name">
-        <!-- Container for yearly course inputs -->
-        <div id="courses">
-            <!-- Yearly course inputs will be dynamically added here -->
-        </div>
-        <!-- Buttons to add year, calculate GPA, and generate transcript -->
-        <button onclick="addYear()">Add Year</button>
-        <button onclick="calculateGPA()">Calculate GPA</button>
-        <!-- Container to display GPA results -->
+        <div id="courses"></div>
+        <button class="button-resource" onclick="addYear()">Add Year</button>
+        <button class="button-resource" onclick="calculateGPA()">Calculate GPA</button>
         <div id="gpaBox" class="gpa-box hidden"></div>
-        <!-- Button to generate transcript -->
-        <button id="generateTranscriptBtn" class="hidden" onclick="generateTranscript()">Generate Transcript</button>
-        <!-- Footer with links to helpful resources and help -->
+        <button id="generateTranscriptBtn" class="hidden button-resource" onclick="generateTranscript()">Generate Transcript</button>
+        <button id="generatePDFBtn" class="hidden button-resource" onclick="downloadPDF()">Download PDF Transcript</button>
         <footer class="footer">
-            <button onclick="window.location.href='resources.html'">Helpful Resources</button>
-            <button onclick="window.location.href='help.html'">Help</button>
+            <button class="button-resource" onclick="window.location.href='resources.html'">Helpful Resources</button>
+            <button class="button-resource" onclick="window.location.href='help.html'">Help</button>
         </footer>
     </div>
-
-    <!-- JavaScript code -->
     <script>
-        // Variables to track GPA calculation
         let yearAdded = 0;
         let totalPointsUnweighted = 0;
         let totalPointsWeighted = 0;
         let totalCredits = 0;
+        let totalPointsHope = 0;
+        let totalCreditsHope = 0;
 
-        // Function to add a new year
+        // Define variables to track attempted and earned credits for each graduation requirement
+        let englishCreditsAttempted = 0;
+        let mathCreditsAttempted = 0;
+        let scienceCreditsAttempted = 0;
+        let socialStudiesCreditsAttempted = 0;
+        let healthCreditsAttempted = 0;
+        let ctaeFineArtsOrForeignLanguageCreditsAttempted = 0;
+        let electiveCreditsAttempted = 0;
+
+        let englishCreditsEarned = 0;
+        let mathCreditsEarned = 0;
+        let scienceCreditsEarned = 0;
+        let socialStudiesCreditsEarned = 0;
+        let healthCreditsEarned = 0;
+        let ctaeFineArtsOrForeignLanguageCreditsEarned = 0;
+        let electiveCreditsEarned = 0;
+
         function addYear() {
             const yearNames = ['Freshman', 'Sophomore', 'Junior', 'Senior'];
             if (yearAdded < yearNames.length) {
@@ -159,17 +172,16 @@
                 yearContainer.classList.add('year-container');
                 yearContainer.innerHTML = `
                     <h3 class="year-title">${yearNames[yearAdded]} Year</h3>
-                    <button class="add-course-btn" onclick="addCourse('${yearNames[yearAdded]}')">Add Course</button>
+                    <button class="add-course-btn button-resource" onclick="addCourse('${yearNames[yearAdded]}')">Add Course</button>
                 `;
                 document.getElementById('courses').appendChild(yearContainer);
                 yearAdded++;
             }
             if (yearAdded >= yearNames.length) {
-                document.querySelector('button[onclick="addYear()"]').classList.add('hidden');
+                document.querySelector('.button-resource[onclick="addYear()"]').classList.add('hidden');
             }
         }
 
-        // Function to add a new course for a given year
         function addCourse(year) {
             const yearDiv = document.getElementById(year.toLowerCase());
             const courseDiv = document.createElement('div');
@@ -191,137 +203,285 @@
                     <option value="AP">AP</option>
                     <option value="Dual">Dual Enrollment</option>
                 </select>
+                <label for="${year}Subject">Class Subject:</label>
+                <select id="${year}Subject">
+                    <option value="English">English</option>
+                    <option value="Math">Math</option>
+                    <option value="Social Studies">Social Studies</option>
+                    <option value="Foreign Language">Foreign Language</option>
+                    <option value="Science">Science</option>
+                    <option value="CTAE">CTAE</option>
+                    <option value="Health and Personal Fitness">Health and Personal Fitness</option>
+                    <option value="Fine Arts">Fine Arts</option>
+                    <option value="Elective">Elective</option>
+                </select>
             `;
             yearDiv.appendChild(courseDiv);
         }
 
-        // Function to calculate GPA
         function calculateGPA() {
-            totalPointsUnweighted = totalPointsWeighted = totalCredits = 0;
+            totalPointsUnweighted = 0;
+            totalPointsWeighted = 0;
+            totalCredits = 0;
+            totalPointsHope = 0;
+            totalCreditsHope = 0;
+           
+            
+            // Reset the attempted and earned credits for each requirement
+            englishCreditsAttempted = 0;
+            mathCreditsAttempted = 0;
+            scienceCreditsAttempted = 0;
+            socialStudiesCreditsAttempted = 0;
+            healthCreditsAttempted = 0;
+            ctaeFineArtsOrForeignLanguageCreditsAttempted = 0;
+            electiveCreditsAttempted = 0;
+
+            englishCreditsEarned = 0;
+            mathCreditsEarned = 0;
+            scienceCreditsEarned = 0;
+            socialStudiesCreditsEarned = 0;
+            healthCreditsEarned = 0;
+            ctaeFineArtsOrForeignLanguageCreditsEarned = 0;
+            electiveCreditsEarned = 0;
 
             document.querySelectorAll('.course-input').forEach(course => {
                 const gradePercent = parseFloat(course.querySelector('input[type="number"]').value);
                 const credits = parseFloat(course.querySelector('select[id$="Credits"]').value);
                 const type = course.querySelector('select[id$="Type"]').value;
+                const subject = course.querySelector('select[id$="Subject"]').value;
 
-                let gradePoints;
-                let weight;
+                let gradePoints = 0;
+                let additionalWeight = 0;
 
-                switch (type) {
-                    case 'Regular':
-                        gradePoints = gradePercent >= 90 ? 4 : gradePercent >= 80 ? 3 : gradePercent >= 70 ? 2 : gradePercent >= 60 ? 0 : 0;
-                        weight = 0;
-                        break;
-                    case 'Honors':
-                        gradePoints = gradePercent >= 90 ? 4 : gradePercent >= 80 ? 3 : gradePercent >= 70 ? 2 : gradePercent >= 60 ? 0 : 0;
-                        weight = 0.5;
-                        break;
-                    case 'AP':
-                    case 'Dual':
-                        gradePoints = gradePercent >= 90 ? 5 : gradePercent >= 80 ? 4 : gradePercent >= 70 ? 3 : gradePercent >= 60 ? 1 : 0;
-                        weight = 1;
-                        break;
+                if (gradePercent >= 90) {
+                    gradePoints = 4;
+                } else if (gradePercent >= 80) {
+                    gradePoints = 3;
+                } else if (gradePercent >= 70) {
+                    gradePoints = 2;
+                
+                } else {
+                    gradePoints = 0;
                 }
 
-                totalPointsUnweighted += (gradePercent >= 90 ? 4 : gradePercent >= 80 ? 3 : gradePercent >= 70 ? 2 : gradePercent >= 60 ? 0 : 0) * credits;
-                totalPointsWeighted += gradePoints * credits;
+               if (type === 'AP' || type === 'Dual') {
+                    additionalWeight = 1;
+                }
+
+                totalPointsUnweighted += gradePoints * credits;
+                totalPointsWeighted += (gradePoints + additionalWeight) * credits;
                 totalCredits += credits;
+
+                if (['English','Math', 'Science', 'Social Studies', 'Foreign Language'].includes(subject)) {
+                totalPointsHope += gradePoints * credits;
+                totalCreditsHope += credits;
+            }
+
+                // Update attempted and earned credits for each requirement based on the subject
+                switch (subject) {
+                    case 'English':
+                        englishCreditsAttempted += credits;
+                        if (gradePercent >= 70) {
+                            englishCreditsEarned += credits;
+                        }
+                        break;
+                    case 'Math':
+                        mathCreditsAttempted += credits;
+                        if (gradePercent >= 70) {
+                            mathCreditsEarned += credits;
+                        }
+                        break;
+                    case 'Science':
+                        scienceCreditsAttempted += credits;
+                        if (gradePercent >= 70) {
+                            scienceCreditsEarned += credits;
+                        }
+                        break;
+                    case 'Social Studies':
+                        socialStudiesCreditsAttempted += credits;
+                        if (gradePercent >= 70) {
+                            socialStudiesCreditsEarned += credits;
+                        }
+                        break;
+                    case 'Health and Personal Fitness':
+                        healthCreditsAttempted += credits;
+                        if (gradePercent >= 70) {
+                            healthCreditsEarned += credits;
+                        }
+                        break;
+                    case 'Foreign Language':
+                    case 'Fine Arts':
+                    case 'CTAE':
+                        ctaeFineArtsOrForeignLanguageCreditsAttempted += credits;
+                        if (gradePercent >= 70) {
+                            ctaeFineArtsOrForeignLanguageCreditsEarned += credits;
+                        }
+                        break;
+                    case 'Elective':
+                        electiveCreditsAttempted += credits;
+                        if (gradePercent >= 70) {
+                            electiveCreditsEarned += credits;
+                        }
+                        break;
+                    default:
+                        break;
+                }
             });
 
             const unweightedGPA = totalPointsUnweighted / totalCredits;
             const weightedGPA = totalPointsWeighted / totalCredits;
+            const hopeGPA = totalCreditsHope > 0 ? totalPointsHope / totalCreditsHope : 0;
 
             document.getElementById('gpaBox').innerHTML = `
                 <p>Unweighted GPA: ${unweightedGPA.toFixed(2)}</p>
                 <p>Weighted GPA: ${weightedGPA.toFixed(2)}</p>
+                <p>Hope GPA: ${hopeGPA.toFixed(2)}</p>
             `;
             document.getElementById('gpaBox').classList.remove('hidden');
             document.getElementById('generateTranscriptBtn').classList.remove('hidden');
+            document.getElementById('generatePDFBtn').classList.remove('hidden');
+            window.totalPointsUnweighted = totalPointsUnweighted;
+            window.totalPointsWeighted = totalPointsWeighted;
+            window.totalCredits = totalCredits;
         }
 
-        // Function to generate transcript
         function generateTranscript() {
-            const studentName = document.getElementById('userName').value.trim();
-            const transcriptData = Array.from(document.querySelectorAll('.course-input')).map(course => {
-                const name = course.querySelector('input[type="text"]').value.trim();
-                const gradePercent = parseInt(course.querySelector('input[type="number"]').value);
-                const letterGrade = gradePercent >= 90 ? 'A' : gradePercent >= 80 ? 'B' : gradePercent >= 70 ? 'C' : gradePercent >= 60 ? 'D' : 'F';
-                const credits = course.querySelector('select[id$="Credits"]').value;
-                const type = course.querySelector('select[id$="Type"]').value;
-                const year = course.parentElement.id;
-                return { name, letterGrade, credits, type, year };
-            }).sort((a, b) => a.name.localeCompare(b.name));
+    const studentName = document.getElementById('userName').value.trim();
+    const transcriptData = Array.from(document.querySelectorAll('.course-input')).map(course => {
+        const name = course.querySelector('input[type="text"]').value.trim();
+        const gradePercent = parseInt(course.querySelector('input[type="number"]').value);
+        const letterGrade = gradePercent >= 90 ? 'A' : gradePercent >= 80 ? 'B' : gradePercent >= 70 ? 'C' : gradePercent >= 60 ? 'D' : 'F';
+        const credits = course.querySelector('select[id$="Credits"]').value;
+        const type = course.querySelector('select[id$="Type"]').value;
+        const subject = course.querySelector('select[id$="Subject"]').value;
+        const year = course.parentElement.id;
 
-            const transcriptWindow = window.open('', '_blank');
-            const gradeLevels = ['Freshman', 'Sophomore', 'Junior', 'Senior'];
-            transcriptWindow.document.write(`
-                <!DOCTYPE html>
-                <html lang="en">
-                <head>
-                    <meta charset="UTF-8">
-                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                    <title>Transcript</title>
-                    <style>
-                        body {
-                            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-                            color: #333;
-                            padding: 20px;
-                            margin: 0;
-                        }
-                        .transcript {
-                            background-color: #f9f9f9;
-                            border: 1px solid #ddd;
-                            border-radius: 10px;
-                            padding: 20px;
-                            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-                        }
-                        h1, h2 {
-                            color: #800000;
-                        }
-                        ul {
-                            list-style-type: none;
-                            padding: 0;
-                        }
-                        ul li {
-                            margin-bottom: 5px;
-                        }
-                        .grade-level {
-                            margin-top: 20px;
-                            font-weight: bold;
-                        }
-                    </style>
-                </head>
-                <body>
-                    <div class="transcript">
-                        <h1>Lambert High School</h1>
-                        <h2>Transcript for: ${studentName}</h2>
-                        ${
-                            gradeLevels.map(grade => {
-                                const gradeCourses = transcriptData.filter(course => course.year.toLowerCase() === grade.toLowerCase());
-                                if (gradeCourses.length > 0) {
-                                    return `
-                                        <div class="grade-level">
-                                            <h3>${grade} Year</h3>
-                                            <ul>
-                                                ${gradeCourses.map(course => `<li>${course.name} - Grade: ${course.letterGrade}, Credits: ${course.credits}, Type: ${course.type}</li>`).join('')}
-                                            </ul>
-                                        </div>
-                                    `;
-                                }
-                                return '';
-                            }).join('')
-                        }
-                        <p>Unweighted GPA: ${(totalPointsUnweighted / totalCredits).toFixed(2)}</p>
-                        <p>Weighted GPA: ${(totalPointsWeighted / totalCredits).toFixed(2)}</p>
-                    </div>
-                </body>
-                </html>
-            `);
-            transcriptWindow.document.close();
+        // Convert the year name to "Freshman Year", "Sophomore Year", etc.
+        const yearLabel = year.charAt(0).toUpperCase() + year.slice(1) + ' Year';
+
+        return { name, letterGrade, credits, type, subject, year: yearLabel };
+    }).sort((a, b) => a.name.localeCompare(b.name));
+
+    const groupedTranscriptData = {};
+    transcriptData.forEach(course => {
+        if (!groupedTranscriptData[course.year]) {
+            groupedTranscriptData[course.year] = [];
         }
+        groupedTranscriptData[course.year].push(course);
+    });
 
-        // Initialize with one year to start
-        addYear();
+    const transcriptWindow = window.open('', '_blank');
+    transcriptWindow.document.write(`
+        <!DOCTYPE html>
+        <html lang="en">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Transcript</title>
+            <style>
+                body {
+                    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                    color: #333;
+                    padding: 20px;
+                    margin: 0;
+                }
+                .transcript {
+                    background-color: #f9f9f9;
+                    border: 1px solid #ddd;
+                    border-radius: 10px;
+                    padding: 20px;
+                    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+                    max-width: 600px;
+                    margin: 0 auto;
+                }
+                h1, h2 {
+                    color: #800000;
+                }
+                ul {
+                    list-style-type: none;
+                    padding: 0;
+                }
+                ul li {
+                    margin-bottom: 5px;
+                }
+                .grade-level {
+                    margin-top: 20px;
+                    border-bottom: 1px solid #ddd;
+                    padding-bottom: 10px;
+                }
+                .grade-level:last-child {
+                    border-bottom: none;
+                }
+                .grade-level p {
+                    margin: 5px 0;
+                }
+            </style>
+        </head>
+        <body>
+            <div class="transcript">
+                <h1>Lambert High School</h1>
+                <h2>Transcript for: ${studentName}</h2>
+                ${Object.entries(groupedTranscriptData).map(([year, courses]) => `
+                    <div class="grade-level">
+                        <h3>${year}</h3>
+                        ${courses.map(course => `
+                            <p>Class Name: ${course.name}, Grade: ${course.letterGrade}, Credits: ${course.credits}, Type: ${course.type}, Subject: ${course.subject}</p>
+                        `).join('')}
+                    </div>
+                `).join('')}
+            </div>
+        </body>
+        </html>
+    `);
+    transcriptWindow.document.close();
+}
+
+
+
+        function downloadPDF() {
+            const { jsPDF } = window.jspdf; // Correcting the jsPDF object reference for the library
+            const doc = new jsPDF();
+
+            const studentName = document.getElementById('userName').value.trim();
+            doc.setFontSize(14);
+            doc.text('Transcript for: ' + studentName, 10, 10);
+
+            let yPosition = 20;
+
+            for (let i = 0; i < yearAdded; i++) {
+                const yearNames = ['Freshman', 'Sophomore', 'Junior', 'Senior'];
+                const yearContainer = document.getElementById(yearNames[i].toLowerCase());
+                
+                if (yearContainer) {
+                    doc.setFontSize(12);
+                    doc.text(yearNames[i] + ' Year:', 10, yPosition);
+                    yPosition += 6;
+
+                    const courses = yearContainer.querySelectorAll('.course-input');
+                    courses.forEach((course) => {
+                        const courseName = course.querySelector('input[type="text"]').value;
+                        const grade = course.querySelector('input[type="number"]').value;
+                        const credits = course.querySelector('select[id$="Credits"]').value;
+                        const type = course.querySelector('select[id$="Type"]').value;
+
+                        doc.setFontSize(10);
+                        doc.text(`- ${courseName} (${type}), Grade: ${grade}, Credits: ${credits}`, 15, yPosition);
+                        yPosition += 6;
+                    });
+
+                    yPosition += 6;
+                }
+            }
+
+            doc.setFontSize(12);
+            doc.text(`Unweighted GPA: ${(totalPointsUnweighted / totalCredits).toFixed(2)}`, 10, yPosition);
+            yPosition += 6;
+            doc.text(`Weighted GPA: ${(totalPointsWeighted / totalCredits).toFixed(2)}`, 10, yPosition);
+            yPosition += 6;
+            doc.text(`Hope GPA: ${(totalPointsHope / totalCreditsHope).toFixed(2)}`, 10, yPosition);
+
+            doc.save(`${studentName}_Transcript.pdf`);
+        }
     </script>
 </body>
 </html>
