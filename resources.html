@@ -6,61 +6,62 @@
     <title>Helpful Resources</title>
     <style>
         body, html {
-            height: 100%; /* Ensure the full height of the viewport is used */
+            height: 100%;
             margin: 0;
             padding: 0;
             display: flex;
-            justify-content: center; /* Center horizontally */
-            align-items: center; /* Center vertically */
-            background-color: #800000;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(to bottom right, #800000 0%, #000000 100%) fixed;
             font-family: Arial, sans-serif;
         }
         .container {
-            background-color: #fff;
+            background: linear-gradient(to top left, #575757, #000000);
             padding: 20px;
             border-radius: 8px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            width: 350px; /* Adjust width as needed */
+            width: 350px;
             text-align: center;
+            color: #fff;
+            transition: background 0.5s ease; /* Transition for background gradient */
         }
         .button, .button-resource {
             width: 100%;
             padding: 10px;
             margin-bottom: 10px;
-            background-color: #800000;
+            background-color: #aaaaaa;
             color: #fff;
             border: none;
             border-radius: 4px;
             cursor: pointer;
-            text-decoration: none; /* Remove underline from links */
-            display: block; /* Ensure links are block level for full width */
+            text-decoration: none;
+            display: block;
+            transition: background-color 0.3s ease;
         }
         .button-resource:hover {
-            background-color: #800000;
+            background-color: #b30000;
         }
         .button {
-            width: auto; /* Adjust width to fit content */
-            margin-bottom: 0; /* Remove bottom margin */
+            width: auto;
+            margin-bottom: 0;
         }
     </style>
 </head>
 <body>
     <div class="container">
          <div class="logo">
-            <!-- Placeholder for logo if similar to GPA Calculator page -->
             <img src="https://s3-us-west-2.amazonaws.com/sportshub2-uploads-prod/files/sites/3715/2022/09/15171508/Updated-Lambert-HS-Logo.png" alt="Lambert Longhorns Logo" style="width: 100px; height: auto; margin: 0 auto 20px;">
         </div>
-        <!-- Header with the title of the helpful resources page -->
         <h1>Helpful Resources</h1>
-        <!-- Buttons to access different resources -->
         <button onclick="window.open('https://collegeai.com/chanceme')" class="button-resource">Calculate Your Chances At College</button>
+        <button onclick="window.open('https://www.gafutures.org/hope-state-aid-programs/hope-zell-miller-scholarships/')" class="button-resource">Hope and Zelle Miller Scholarship Information</button>
+        <button onclick="window.open('https://www.forsyth.k12.ga.us/Page/39412')" class="button-resource">Graduation Requirements</button>
         <button onclick="window.open('https://www.forsyth.k12.ga.us/domain/2329')" class="button-resource">Counselor's Office</button>
         <button onclick="window.open('https://www.collegeboard.org/')" class="button-resource">College Board</button>
         <button onclick="window.open('https://hippocampus.org/')" class="button-resource">Hippo Campus</button>
         <button onclick="window.open('https://www.khanacademy.org/')" class="button-resource">Khan Academy</button>
         <button onclick="window.open('https://cws.auburn.edu/shared/content/files/50/WISE_Study_Tips.pdf')" class="button-resource">Study Tips</button>
         <button onclick="window.open('https://www.jmu.edu/first-gen/valleyscholars/_files/improvemyhighschoolstudyskills.pdf')" class="button-resource">Study Tips</button>
-        <!-- Button to return to the GPA Calculator -->
         <a href="gpacalculator.html" target="_self" class="button">Back to GPA Calculator</a>
     </div>
 </body>
